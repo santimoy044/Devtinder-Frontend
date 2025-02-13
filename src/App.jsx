@@ -2,7 +2,7 @@ function App() {
   
   return (
     <>
-      <h1>devTinder Frontend</h1>
+      <h1 className="text-3xl">devTinder Frontend</h1>
     </>
   );
 }
