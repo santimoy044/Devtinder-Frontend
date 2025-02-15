@@ -11,12 +11,12 @@ const Footer = () => {
           clipRule="evenodd"
           className="inline-block fill-current"
         >
-         <path d="M12 2c-3.5 5.5-7 8-7 12 0 3.866 3.134 7 7 7s7-3.134 7-7c0-4-3.5-6.5-7-12zm0 17c-2.209 0-4-1.791-4-4 0-1.389.707-2.651 1.793-3.454.648.857 1.813 1.454 3.207 1.454 1.564 0 2.743-1.245 2.993-2.654.642 1.029 1.007 2.264 1.007 3.654 0 2.209-1.791 4-4 4z"/>
+          <path d="M12 2c-3.5 5.5-7 8-7 12 0 3.866 3.134 7 7 7s7-3.134 7-7c0-4-3.5-6.5-7-12zm0 17c-2.209 0-4-1.791-4-4 0-1.389.707-2.651 1.793-3.454.648.857 1.813 1.454 3.207 1.454 1.564 0 2.743-1.245 2.993-2.654.642 1.029 1.007 2.264 1.007 3.654 0 2.209-1.791 4-4 4z" />
         </svg>
         <p className="font-bold">
           DevTinder
           <br />
-          <h2 className="text-2xl">Connecting Developers</h2>
+          Connecting Developers
         </p>
         <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
       </aside>
