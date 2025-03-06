@@ -52,12 +52,7 @@ The frontend interacts with the backend API hosted in the [devTinder-backend](ht
 
 ## 🚀 Deployment
 
-To build and deploy:
-```sh
-npm  run  build
-```
-
-Then, host the `dist/` folder on your preferred hosting service.
+Will Soon deploy on AWS
 
 ## 📜 License
 
