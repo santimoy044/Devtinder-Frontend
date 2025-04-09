@@ -3,14 +3,12 @@ import React from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
 import { removeUserFromFeed } from "../utils/feedSlice";
+import { motion } from "framer-motion";
 
 const UserCard = ({ user }) => {
-  console.log(user);
   const dispatch = useDispatch();
   const { _id, firstName, lastName, age, gender, about, photoURL, skills } =
     user;
-
-  console.log("Extracted Skills:", skills); // Debugging
 
   const handleSendRequest = async (status, userId) => {
     try {
@@ -21,56 +19,101 @@ const UserCard = ({ user }) => {
           withCredentials: true,
         }
       );
+      console.log("Request response:", res.data);
       dispatch(removeUserFromFeed(userId));
     } catch (error) {
-      console.log(error);
+      console.error("Error sending request:", error);
+      alert(error.response?.data?.message || "Failed to send request");
     }
   };
 
   return (
-    <div className="card grid-rows-1 bg-base-300 w-96 shadow-xl p-3">
-      <figure>
-        <img src={photoURL} alt="Shoes" />
-      </figure>
-      <div className="card-body">
-        <h2 className="card-title">{firstName + " " + lastName}</h2>
-        {age && gender && <p>{age + ", " + gender}</p>}
-        <p>{about}</p>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="card w-96 bg-base-300 shadow-xl overflow-hidden max-h-[550px]"
+    >
+      <div className="h-56 w-full overflow-hidden">
+        {photoURL ? (
+          <img
+            src={photoURL}
+            alt="Profile"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-4xl font-bold">
+            {firstName?.[0]}
+            {lastName?.[0]}
+          </div>
+        )}
+      </div>
+
+      <div className="card-body py-4 px-6">
+        <div className="mb-3">
+          <h2 className="text-2xl font-bold text-pink-400 text-center">
+            {firstName} {lastName}
+          </h2>
+          {age && gender && (
+            <div className="flex items-center justify-center gap-2 mt-2">
+              <span className="px-3 py-1 bg-pink-400/10 text-pink-400 rounded-full text-sm border border-pink-400/20">
+                {age} years
+              </span>
+              <span className="px-3 py-1 bg-pink-400/10 text-pink-400 rounded-full text-sm border border-pink-400/20">
+                {gender.charAt(0).toUpperCase() + gender.slice(1)}
+              </span>
+            </div>
+          )}
+        </div>
+
+        {about && (
+          <div className="mb-3">
+            <h3 className="text-lg font-semibold text-pink-400 mb-1">About</h3>
+            <p className="text-gray-300 text-sm">{about}</p>
+          </div>
+        )}
+
         {skills && skills.length > 0 && (
-          <div>
-            <h3 className="font-semibold">Skills:</h3>
+          <div className="mb-3">
+            <h3 className="text-lg font-semibold text-pink-400 mb-1">Skills</h3>
             <div className="flex flex-wrap gap-2">
-              {skills.map((skill, index) => (
-                <span
-                  key={index}
-                  className="bg-blue-200 text-blue-700 px-2 py-1 rounded-lg text-sm"
-                >
-                  {skill.trim()}
+              {Array.isArray(skills) ? (
+                skills.map((skill, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-pink-400/10 text-pink-400 rounded-full text-sm border border-pink-400/20"
+                  >
+                    {skill.trim()}
+                  </span>
+                ))
+              ) : (
+                <span className="px-3 py-1 bg-pink-400/10 text-pink-400 rounded-full text-sm border border-pink-400/20">
+                  {skills}
                 </span>
-              ))}
+              )}
             </div>
           </div>
         )}
-        <div className="card-actions justify-center my-4">
-          <button
-            className="btn btn-accent"
-            onClick={() => {
-              handleSendRequest("ignored", _id);
-            }}
+
+        <div className="flex flex-col items-center gap-2 mt-auto">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn btn-secondary w-48"
+            onClick={() => handleSendRequest("interested", _id)}
+          >
+            Interested
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="btn btn-error w-48"
+            onClick={() => handleSendRequest("ignored", _id)}
           >
             Ignore
-          </button>
-          <button
-            className="btn btn-secondary"
-            onClick={() => {
-              handleSendRequest("intrested", _id);
-            }}
-          >
-            Intrested
-          </button>
+          </motion.button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

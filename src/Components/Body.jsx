@@ -14,16 +14,15 @@ const Body = () => {
 
   const fetchUser = async () => {
     try {
-      const user = await axios.get(BASE_URL + "/profile/view", {
+      const response = await axios.get(BASE_URL + "/profile/view", {
         withCredentials: true,
       });
-      // console.log(user.data);
-      dispatch(addUser(user.data));
+      dispatch(addUser(response.data));
     } catch (err) {
-      if (err.status == 401) {
+      if (err.response && err.response.status === 401) {
         navigate("/login");
       }
-      console.log(err);
+      console.error("Error fetching user profile:", err);
     }
   };
 
@@ -31,7 +30,8 @@ const Body = () => {
     if (!user) {
       fetchUser();
     }
-  }, []);
+  }, [user]);
+
   return (
     <div>
       <Navbar />

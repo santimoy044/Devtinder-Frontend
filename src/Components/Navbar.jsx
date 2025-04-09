@@ -4,6 +4,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { removeUser } from "../utils/userSlice";
 import { removeFeed } from "../utils/feedSlice";
+import { removeConnection } from "../utils/connectionSlice";
+import { removeAllRequests } from "../utils/requestSlice";
 
 const Navbar = () => {
   const user = useSelector((store) => store.user);
@@ -12,12 +14,32 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+      // Clear all Redux state
       dispatch(removeUser());
       dispatch(removeFeed());
+      dispatch(removeConnection());
+      dispatch(removeAllRequests());
+
+      // Make logout request to backend
+      await axios.post(BASE_URL + "/logout", {}, { withCredentials: true });
+
+      // Clear any remaining cookies/local storage
+      document.cookie.split(";").forEach(function (c) {
+        document.cookie = c
+          .replace(/^ +/, "")
+          .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+      });
+
+      // Navigate to login page
       navigate("/login");
     } catch (err) {
-      console.log(err);
+      console.error("Logout error:", err);
+      // Even if the backend request fails, we should still clear the frontend state
+      dispatch(removeUser());
+      dispatch(removeFeed());
+      dispatch(removeConnection());
+      dispatch(removeAllRequests());
+      navigate("/login");
     }
   };
 
@@ -25,7 +47,10 @@ const Navbar = () => {
     <div className="fixed top-0 left-0 w-full bg-neutral text-white shadow-lg z-50">
       <div className="navbar px-5 flex justify-between">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-green-400 hover:text-green-300 transition">
+        <Link
+          to="/"
+          className="text-2xl font-bold text-green-400 hover:text-green-300 transition"
+        >
           DevTinder 🔥
         </Link>
 
@@ -52,17 +77,26 @@ const Navbar = () => {
                 className="menu menu-sm dropdown-content bg-gray-900 text-gray-300 border border-gray-700 rounded-md shadow-lg mt-3 w-52 p-2 right-0 z-50"
               >
                 <li>
-                  <Link to="/profile" className="justify-between hover:bg-gray-800 rounded-md p-2">
+                  <Link
+                    to="/profile"
+                    className="justify-between hover:bg-gray-800 rounded-md p-2"
+                  >
                     Profile <span className="badge badge-success">New</span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/connections" className="justify-between hover:bg-gray-800 rounded-md p-2">
+                  <Link
+                    to="/connections"
+                    className="justify-between hover:bg-gray-800 rounded-md p-2"
+                  >
                     Connections <span className="badge badge-error">💗</span>
                   </Link>
                 </li>
                 <li>
-                  <Link to="/requests" className="justify-between hover:bg-gray-800 rounded-md p-2">
+                  <Link
+                    to="/requests"
+                    className="justify-between hover:bg-gray-800 rounded-md p-2"
+                  >
                     Requests <span className="badge badge-warning">👁️</span>
                   </Link>
                 </li>
